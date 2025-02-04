@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Send, Bot, User } from 'lucide-react';
+import { useEffect, useState, useRef } from 'react';
+import { Send, Bot, User, ChevronLeft, ChevronRight } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 function App() {
@@ -8,6 +8,18 @@ function App() {
   const [botTyping, setBotTyping] = useState(false);
   const [typingDots, setTypingDots] = useState("");
   const [name, setName] = useState("User");
+  const suggestionsRef = useRef<HTMLDivElement>(null);
+
+  const scrollSuggestions = (direction: 'left' | 'right') => {
+    if (suggestionsRef.current) {
+      const scrollAmount = 200;
+      const newScrollPosition = suggestionsRef.current.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount);
+      suggestionsRef.current.scrollTo({
+        left: newScrollPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   useEffect(() => {
     setName(uuidv4());
@@ -72,7 +84,6 @@ function App() {
     "Quels semesters sont dans le filière Génie Informatique ?",
     "Quels modules sont dans le filière Génie Informatique ?",
     "Quels modules sont dans le Semester 1 ?",
-    "Pouvez-vous lister les éléments de Programmation Orientée Objet?",
     "Pouvez-vous lister les éléments de Programmation Orientée Objet?"
   ];
 
@@ -137,16 +148,35 @@ function App() {
 
         {/* Suggestions */}
         <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-            {suggestions.map((suggestion, index) => (
-              <button
-                key={index}
-                onClick={() => setInputMessage(suggestion)}
-                className="px-3 py-1 text-sm bg-white border border-gray-200 rounded-full hover:bg-indigo-50 hover:border-indigo-200 transition-colors whitespace-nowrap"
-              >
-                {suggestion}
-              </button>
-            ))}
+          <div className="relative flex items-center">
+            <button
+              onClick={() => scrollSuggestions('left')}
+              className="absolute -left-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-md border border-gray-200 hover:bg-indigo-50 hover:border-indigo-200 transition-colors z-10"
+            >
+              <ChevronLeft className="w-5 h-5 text-gray-600" />
+            </button>
+            
+            <div 
+              ref={suggestionsRef}
+              className="flex-1 flex gap-2 overflow-x-auto scrollbar-hide snap-x snap-mandatory mx-8 px-2"
+            >
+              {suggestions.map((suggestion, index) => (
+                <button
+                  key={index}
+                  onClick={() => setInputMessage(suggestion)}
+                  className="snap-start shrink-0 px-4 py-2 text-sm bg-white border border-gray-200 rounded-full hover:bg-indigo-50 hover:border-indigo-200 transition-colors whitespace-nowrap shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => scrollSuggestions('right')}
+              className="absolute -right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-md border border-gray-200 hover:bg-indigo-50 hover:border-indigo-200 transition-colors z-10"
+            >
+              <ChevronRight className="w-5 h-5 text-gray-600" />
+            </button>
           </div>
         </div>
 
