@@ -3,7 +3,14 @@ import { Send, Bot, User, ChevronLeft, ChevronRight } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 function App() {
-  const [chat, setChat] = useState([]);
+  interface Message {
+    sender: 'user' | 'bot';
+    sender_id?: string;
+    recipient_id?: string;
+    msg: string;
+  }
+
+  const [chat, setChat] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [botTyping, setBotTyping] = useState(false);
   const [typingDots, setTypingDots] = useState("");
@@ -31,7 +38,7 @@ function App() {
   }, [chat]);
 
   useEffect(() => {
-    let typingInterval;
+    let typingInterval: number | undefined;
     if (botTyping) {
       typingInterval = setInterval(() => {
         setTypingDots((prev) => (prev === "...." ? "" : prev + "."));
@@ -42,10 +49,10 @@ function App() {
     return () => clearInterval(typingInterval);
   }, [botTyping]);
 
-  const handleSubmit = (evt) => {
+  const handleSubmit = (evt: { preventDefault: () => void; }) => {
     evt.preventDefault();
     if (inputMessage.trim()) {
-      const userMessage = { sender: "user", sender_id: name, msg: inputMessage };
+      const userMessage: Message = { sender: "user", sender_id: name, msg: inputMessage };
       setChat((prevChat) => [...prevChat, userMessage]);
       setBotTyping(true);
       setInputMessage("");
@@ -53,7 +60,7 @@ function App() {
     }
   };
 
-  const rasaAPI = async (name, msg) => {
+  const rasaAPI = async (name: string, msg: string) => {
     try {
       const response = await fetch("http://localhost:5005/webhooks/rest/webhook", {
         method: "POST",
@@ -65,7 +72,7 @@ function App() {
       });
       const data = await response.json();
       if (data) {
-        const botMessages = data.map((message) => ({
+        const botMessages = data.map((message: { recipient_id: any; text: any; }) => ({
           sender: "bot",
           recipient_id: message.recipient_id,
           msg: message.text,
@@ -81,15 +88,19 @@ function App() {
   const suggestions = [
     "Bonjour",
     "Quels filières sont disponibles ?",
-    "Quels semesters sont dans le filière Génie Informatique ?",
+    "Pouvez-vous lister les éléments qui dans GI ?",
+    "Quels semesters sont dans le filière GI ?",
     "Quels modules sont dans le filière Génie Informatique ?",
     "Quels modules sont dans le Semester 1 ?",
-    "Pouvez-vous lister les éléments de Programmation Orientée Objet?"
+    "Pouvez-vous lister les éléments de Reseaux?",
+    "Pouvez-vous lister les éléments de Langues?",
+    "Quel professeur est responsable de Réseaux",
+    "Quel est l'email du professeur Baddi ?"
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4 md:p-6 flex items-center justify-center">
-      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col h-[800px]">
+      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col h-[1000px]">
         {/* Header */}
         <div className="bg-indigo-600 px-6 py-4 flex items-center gap-3">
           <Bot className="text-white w-8 h-8" />
