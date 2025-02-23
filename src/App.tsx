@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState, useRef } from 'react';
 import { Send, Bot, User, ChevronLeft, ChevronRight } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
@@ -30,6 +31,7 @@ function App() {
 
   useEffect(() => {
     setName(uuidv4());
+    console.log(name)
   }, []);
 
   useEffect(() => {
@@ -95,12 +97,12 @@ function App() {
     "Pouvez-vous lister les éléments de Reseaux?",
     "Pouvez-vous lister les éléments de Langues?",
     "Quel professeur est responsable de Réseaux",
-    "Quel est l'email du professeur Baddi ?"
+    "Quel est l'email du professeur Toumi?"
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4 md:p-6 flex items-center justify-center">
-      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col h-[1000px]">
+      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col h-[900px]">
         {/* Header */}
         <div className="bg-indigo-600 px-6 py-4 flex items-center gap-3">
           <Bot className="text-white w-8 h-8" />
@@ -137,7 +139,8 @@ function App() {
                     ? 'bg-gray-100 text-gray-800'
                     : 'bg-indigo-600 text-white'
                 }`}>
-                  <p className="whitespace-pre-line">{message.msg}</p>
+                  <p className="whitespace-pre-line" dangerouslySetInnerHTML={{ __html: message.msg }}></p>
+
                 </div>
               </div>
             </div>

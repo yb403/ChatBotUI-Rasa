@@ -17,3 +17,26 @@
 #messageArea {
   scroll-behavior: smooth;
 }
+/* Webkit (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #caced3; /* Dark blue track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #133e99; /* Blue scrollbar */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #133e99; /* Darker blue on hover */
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #133e99 #caced3;
+}
